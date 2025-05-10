@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 
-# Signal log fayllar uchun papka
+# Signal loglarini saqlash joyi
 SAVE_DIR = "signal_logs"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
@@ -19,7 +19,6 @@ def receive_signal():
     content = data.get("content")
     source = data.get("source", "unknown")
 
-    # Sana va vaqtni qo‘shib fayl nomini yaratamiz
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"{SAVE_DIR}/signal_{timestamp}.txt"
 
@@ -27,9 +26,11 @@ def receive_signal():
         f.write(f"Type: {signal_type}\n")
         f.write(f"Source: {source}\n")
         f.write(f"Time: {timestamp}\n\n")
-        f.write(f"{content}")
+        f.write(content)
 
     return jsonify({"message": "Signal received successfully!"}), 200
 
+# BU QISM RENDER UCHUN MAJBURIY
 if __name__ == '__main__':
-    app.run()
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
