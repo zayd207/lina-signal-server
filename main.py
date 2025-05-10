@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "LINA Signal Server ishga tushdi!"
+    return "LINA Signal Server ishlayapti!"
 
 @app.route('/signal', methods=['POST'])
 def receive_signal():
@@ -15,3 +15,7 @@ def receive_signal():
     with open("context.txt", "w", encoding="utf-8") as f:
         f.write(f"{timestamp}\n{content}")
     return jsonify({"status": "success", "message": "Signal qabul qilindi."})
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
