@@ -1,1 +1,6 @@
-g
+services:
+  - type: web
+    name: lina-signal-server
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
