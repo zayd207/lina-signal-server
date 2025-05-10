@@ -3,8 +3,6 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-
-# Signal loglarini saqlash joyi
 SAVE_DIR = "signal_logs"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
@@ -23,14 +21,6 @@ def receive_signal():
     filename = f"{SAVE_DIR}/signal_{timestamp}.txt"
 
     with open(filename, "w", encoding="utf-8") as f:
-        f.write(f"Type: {signal_type}\n")
-        f.write(f"Source: {source}\n")
-        f.write(f"Time: {timestamp}\n\n")
-        f.write(content)
+        f.write(f"Type: {signal_type}\nSource: {source}\nTime: {timestamp}\n\n{content}")
 
     return jsonify({"message": "Signal received successfully!"}), 200
-
-# BU QISM RENDER UCHUN MAJBURIY
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
