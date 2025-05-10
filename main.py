@@ -8,7 +8,7 @@ os.makedirs(SAVE_DIR, exist_ok=True)
 
 @app.route('/')
 def home():
-    return 'LINA signal server is active!'
+    return "LINA signal server is active!"
 
 @app.route('/receive_signal', methods=['POST'])
 def receive_signal():
