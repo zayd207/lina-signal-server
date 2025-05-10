@@ -1,21 +1,35 @@
-import os
 from flask import Flask, request, jsonify
-import datetime
+from datetime import datetime
+import os
 
 app = Flask(__name__)
 
+# Signal log fayllar uchun papka
+SAVE_DIR = "signal_logs"
+os.makedirs(SAVE_DIR, exist_ok=True)
+
 @app.route('/')
 def home():
-    return "LINA Signal Server ishlayapti!"
+    return 'LINA signal server is active!'
 
-@app.route('/signal', methods=['POST'])
+@app.route('/receive_signal', methods=['POST'])
 def receive_signal():
-    content = request.json.get("content", "")
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    with open("context.txt", "a", encoding="utf-8") as f:
-        f.write(f"{timestamp}\n{content}\n")
-    return jsonify({"status": "success", "message": "Signal qabul qilindi."})
+    data = request.get_json()
+    signal_type = data.get("signal_type")
+    content = data.get("content")
+    source = data.get("source", "unknown")
+
+    # Sana va vaqtni qo‘shib fayl nomini yaratamiz
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filename = f"{SAVE_DIR}/signal_{timestamp}.txt"
+
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(f"Type: {signal_type}\n")
+        f.write(f"Source: {source}\n")
+        f.write(f"Time: {timestamp}\n\n")
+        f.write(f"{content}")
+
+    return jsonify({"message": "Signal received successfully!"}), 200
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))  # Render `PORT` muhit o‘zgaruvchisini o‘qiydi
-    app.run(host="0.0.0.0", port=port)
+    app.run()
